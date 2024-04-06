@@ -1,4 +1,32 @@
 import pandas as pd
+from constants import MAPPING_DICT
+
+
+def fix_data_columns(column_names, df):
+    """
+    process real world data issues with column names and entry
+    
+    Parameters:
+    column_names (list[str]): columns of data.
+    df (DataFrame): input dataFrame
+    
+    Returns:
+    column_mapping: cleaned column names mapped to old ones
+    """
+      
+    for i,c in enumerate(column_names):
+        if c in MAPPING_DICT:
+            column_names[i] = MAPPING_DICT[c]
+        
+    for i,c in enumerate(column_names):
+        if " :" in c:
+            column_names[i] = column_names[i].split(" :")[0] 
+        if " " in c:
+            column_names[i] = '_'.join(column_names[i].split(" "))
+
+    column_mapping = dict(zip(df.columns.tolist(), column_names))
+
+    return column_mapping
 
 def preprocess_data(csv_file):
     """
@@ -11,12 +39,13 @@ def preprocess_data(csv_file):
     pandas.DataFrame: Preprocessed DataFrame.
     """
     # Read CSV file
-    data = pd.read_csv(csv_file)
+    df = pd.read_csv(csv_file)
     
-    # Filtering unwanted columns (to be implemented by the user)
-    # Example: data = data.drop(['unwanted_column1', 'unwanted_column2'], axis=1)
+    column_names = df.columns.tolist()
+    column_names = [c.strip() for c in column_names]
+
+
+    column_mapping = fix_data_columns(column_names, df)
+    df = df.rename(columns=column_mapping)
     
-    # Combine answers from selected columns into a joint string
-    data['joint_answers'] = data['column1'] + ' ' + data['column2'] + ' ' + data['column3']
-    
-    return data
+    return df

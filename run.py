@@ -8,6 +8,9 @@ import pandas as pd
 from preprocess import preprocess_data
 from plotting import plot_data
 
+from transformers import AutoTokenizer, AutoModel
+from sklearn.metrics.pairwise import cosine_similarity
+
 def generate_embeddings(data):
     """
     Generate embeddings for the processed data using BERT.
@@ -55,7 +58,7 @@ def main(csv_file):
     # Store the similarity scores in another CSV
     if not os.path.exists("data/results/"):
         os.mkdir("data/results")
-        
+
     similarity_df.to_csv('data/results/similarity_scores.csv', index=False)
     
     # Plot relevant data
