@@ -44,16 +44,19 @@ def calculate_cosine_similarity(embeddings):
 
 def main(csv_file):
     # Preprocess the data
-    processed_data = preprocessing.preprocess_data(csv_file)
+    processed_data = preprocess_data(csv_file)
     
     # Generate embeddings
-    embeddings = embedding.generate_embeddings(processed_data)
+    embeddings = generate_embeddings(processed_data)
     
     # Calculate cosine similarity
-    similarity_df = cosine_similarity.calculate_cosine_similarity(embeddings)
+    similarity_df = calculate_cosine_similarity(embeddings)
     
     # Store the similarity scores in another CSV
-    similarity_df.to_csv('similarity_scores.csv', index=False)
+    if not os.path.exists("data/results/"):
+        os.mkdir("data/results")
+        
+    similarity_df.to_csv('data/results/similarity_scores.csv', index=False)
     
     # Plot relevant data
     plot_data(processed_data)
